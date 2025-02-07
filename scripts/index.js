@@ -28,22 +28,26 @@ const TOKEN = "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";
 
 async function obterVisualizacoes() {
   const url = `https://api.github.com/repos/${REPOSITORIO}/contents/${ARQUIVO}`;
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `token ${TOKEN}`,
-    },
-  });
-  const dados = await response.json();
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `token ${TOKEN}`,
+      },
+    });
 
-  if (!dados.content || !/^[A-Za-z0-9+/=]+$/.test(dados.content)) {
-    throw new Error("Conteúdo não está em base64 ou está corrompido");
+    if (response.status === 401) {
+      throw new Error("Não autorizado. Verifique o token de autenticação.");
+    }
+
+    const dados = await response.json();
+    const conteudo = atob(dados.content);
+    const json = JSON.parse(conteudo);
+    return { views: json.views, sha: dados.sha };
+  } catch (error) {
+    console.error("Erro ao obter visualizações:", error);
+    throw error;
   }
-  
-  const conteudo = atob(dados.content);
-  const json = JSON.parse(conteudo);
-  return { views: json.views, sha: dados.sha };
 }
-
 
 async function atualizarVisualizacoes(views, sha) {
   const novoValor = views + 1;

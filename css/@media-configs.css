@@ -1,0 +1,104 @@
+/*---------------------------------------------------------*
+*               Exclusive media queries                   *
+*                   for configs.html                      *
+*---------------------------------------------------------*/
+
+@media (max-width: 520px) {
+    .back-button {
+        margin-left: -2%;
+    }
+
+    .about-button {
+        margin-left: 51%;
+    }
+
+    .hover-text {
+        font-size: 0;
+    }
+
+    .title-icon {
+        width: 60px;
+        height: 60px;
+        margin-left: -5%;
+    }
+
+    .title-link:hover .title-icon {
+        transform: none;
+    }
+
+    .title-link:hover .hover-text {
+        opacity: 1;
+        transform: none;
+    }
+
+    .square-main {
+        flex-direction: column;
+        margin-top: 20px;
+        transform: none;
+        perspective: 0;
+        transition: none;
+        position: relative;
+        gap: 100px;
+        height: auto;
+        margin-bottom: 50px;
+    }
+
+    .square1,
+    .square2 {
+        width: 90dvw;
+        min-height: 700px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .square1 h2,
+    .square2 h2 {
+        text-align: center;
+        margin-left: 0;
+    }
+
+    .square1 h3,
+    .square2 h3 {
+        text-align: center;
+        margin-left: 0;
+        margin: 10px auto;
+    }
+
+    .download-buttons {
+        gap: 40px;
+        margin-top: -5px;
+    }
+
+    .download-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .espaço-final {
+        height: 80px;
+        margin-top: 170px;
+        background-color: transparent;
+    }
+
+    .square1 tr, 
+    .square2 tr {
+        padding-top: 5px;
+    }
+
+    .square1 td,
+    .square2 td {
+        font-size: 18px;
+        padding: 10px 10px 20px 10px;
+        line-height: 1.1;
+    }
+
+    #amostradinho {
+        font-size: 20px;
+    }
+ 
+    .ultima-table td {
+        padding: 10px 50px 20px 10px;
+        text-align: left;
+    }
+    
+}

@@ -1,0 +1,126 @@
+/*---------------------------------------------------------*
+*               Exclusive media queries                   *
+*                   for index.html                        *
+*---------------------------------------------------------*/
+
+@media (max-width: 520px) {
+  .badges-container {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+  }
+
+  .badge {
+    width: 22px;
+    height: 22px;
+  }
+
+  .badge img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .about-button {
+    margin-left: 70%;
+  }
+
+  .about-icon {
+    height: 30px;
+    width: 30px;
+  }
+
+  .menu-icon {
+    margin-left: 10%;
+  }
+
+  .square {
+    transform: none;
+    perspective: 0;
+    transition: none;
+    top: 14%;
+    left: -2.7%;
+    width: 100%;
+    height: 695px;
+  }
+
+  .rectangle,
+  .rectangle2 {
+    width: auto;
+    margin-left: -5px;
+  }
+
+  .rectangle2 {
+    width: 91%;
+  }
+
+  #spotify {
+    width: 95%;
+    height: 152px;
+    margin-left: -5px;
+  }
+
+  .view-count-content {
+    margin-left: 10vw;
+    margin-right: 2%;
+  }
+  .hover-text {
+    font-size: 0;
+  }
+
+  header {
+    padding: 25px 15px;
+    opacity: 1;
+  }
+
+  .menu-icon-header {
+    margin-left: 2.5%;
+    top: 40px;
+  }
+
+  .title-icon {
+    width: 75px;
+    height: 75px;
+    margin-left: -1%;
+  }
+  .title-link:hover .title-icon {
+    transform: none;
+  }
+
+  .title-link:hover .hover-text {
+    opacity: 1;
+    transform: none;
+  }
+
+  .buttons-container {
+    gap: 9vw;
+  }
+
+  .steam-button img,
+  .spotify-button img {
+    width: 30px;
+    height: 30px;
+    transition: none;
+  }
+
+  .discord-button img,
+  .youtube-button img,
+  .cfg-button img {
+    width: 35px;
+    height: 35px;
+    transition: none;
+  }
+
+  .steam-button:hover img,
+  .discord-button:hover img,
+  .spotify-button:hover img,
+  .youtube-button:hover img,
+  .cfg-button:hover img {
+    transition: none;
+  }
+
+  .buttons-container a {
+    transform: none;
+  }
+}

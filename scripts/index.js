@@ -34,10 +34,16 @@ async function obterVisualizacoes() {
     },
   });
   const dados = await response.json();
+
+  if (!dados.content || !/^[A-Za-z0-9+/=]+$/.test(dados.content)) {
+    throw new Error("Conteúdo não está em base64 ou está corrompido");
+  }
+  
   const conteudo = atob(dados.content);
   const json = JSON.parse(conteudo);
   return { views: json.views, sha: dados.sha };
 }
+
 
 async function atualizarVisualizacoes(views, sha) {
   const novoValor = views + 1;

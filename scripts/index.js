@@ -25,9 +25,9 @@ function simplificarNumero(numero) {
 function obterVisualizacoes() {
   const conteudoJson = localStorage.getItem("visualizacoes");
   if (conteudoJson) {
-    return JSON.parse(conteudoJson); 
+    return JSON.parse(conteudoJson);
   }
-  return { views: 0 }; 
+  return { views: 0 };
 }
 
 function atualizarVisualizacoes(views) {
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// Lógica para atualizar visualizações e controlar o player de música
+// overlay
 document.addEventListener("DOMContentLoaded", function () {
   const blurOverlay = document.getElementById("blur-overlay");
   const playBtn = document.getElementById("play-btn");
@@ -82,7 +82,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const songName = document.getElementById("song-name");
   const artistName = document.getElementById("artist-name");
   const volumeBtn = document.getElementById("volume-btn");
-  const volumeSliderContainer = document.getElementById("volume-slider-container");
+  const volumeSliderContainer = document.getElementById(
+    "volume-slider-container"
+  );
   const volumeSlider = document.getElementById("volume-slider");
 
   let isPlaying = false;
@@ -100,7 +102,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const novoContador = atualizarVisualizacoes(views);
     const contadorFormatado = simplificarNumero(novoContador);
 
-    document.getElementById("contador-visualizacoes").textContent = contadorFormatado;
+    document.getElementById("contador-visualizacoes").textContent =
+      contadorFormatado;
 
     blurOverlay.style.display = "none";
 
@@ -131,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   }
 
-  // Inicializar o player de música
+  // Player Music
   function updatePlayer() {
     const song = {
       name: "Drowning (slowed + reverb)",
@@ -164,7 +167,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  // Função para alternar entre play/pause
   function togglePlay() {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -193,7 +195,6 @@ document.addEventListener("DOMContentLoaded", function () {
     isPlaying = !isPlaying;
   }
 
-  // Atualização do progresso da música
   function updateProgress() {
     if (isPlaying && !isSeeking) {
       const currentTime = audioElement.currentTime;
@@ -229,10 +230,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     blurOverlay.style.display = "flex";
 
-    // Carregar as visualizações salvas e atualizar o contador
     const { views } = obterVisualizacoes();
     const contadorFormatado = simplificarNumero(views);
-    document.getElementById("contador-visualizacoes").textContent = contadorFormatado;
+    document.getElementById("contador-visualizacoes").textContent =
+      contadorFormatado;
   };
 
   playBtn.addEventListener("click", togglePlay);

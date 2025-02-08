@@ -1,4 +1,4 @@
-// View Count
+// Função para simplificar o número de visualizações
 function simplificarNumero(numero) {
   if (numero >= 1000000000) {
     return (
@@ -22,55 +22,24 @@ function simplificarNumero(numero) {
   }
 }
 
-const REPOSITORIO = "BoxCodesTools/Bio.database";
-const ARQUIVO = "nohxx-views.json";
-const TOKEN = "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";
-
-async function obterVisualizacoes() {
-  const url = `https://api.github.com/repos/${REPOSITORIO}/contents/${ARQUIVO}`;
-  try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `token ${TOKEN}`,
-      },
-    });
-
-    if (response.status === 401) {
-      throw new Error("Não autorizado. Verifique o token de autenticação.");
-    }
-
-    const dados = await response.json();
-    const conteudo = atob(dados.content);
-    const json = JSON.parse(conteudo);
-    return { views: json.views, sha: dados.sha };
-  } catch (error) {
-    console.error("Erro ao obter visualizações:", error);
-    throw error;
+function obterVisualizacoes() {
+  const conteudoJson = localStorage.getItem("visualizacoes");
+  if (conteudoJson) {
+    return JSON.parse(conteudoJson); 
   }
+  return { views: 0 }; 
 }
 
-async function atualizarVisualizacoes(views, sha) {
+function atualizarVisualizacoes(views) {
   const novoValor = views + 1;
-  const conteudo = btoa(JSON.stringify({ views: novoValor }));
-  const url = `https://api.github.com/repos/${REPOSITORIO}/contents/${ARQUIVO}`;
+  const dados = { views: novoValor };
 
-  await fetch(url, {
-    method: "PUT",
-    headers: {
-      Authorization: `token ${TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message: "Atualizando contador de visualizações",
-      content: conteudo,
-      sha: sha,
-    }),
-  });
+  localStorage.setItem("visualizacoes", JSON.stringify(dados));
 
   return novoValor;
 }
 
-// Menu
+// Menu e interações de navegação
 document.addEventListener("DOMContentLoaded", function () {
   const menuIconHeader = document.getElementById("menu-icon-header");
   const menu = document.getElementById("menu");
@@ -90,9 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   menuIconHeader.addEventListener("click", toggleMenu);
-
   menuIcon.addEventListener("click", toggleMenu);
-
   overlayMenu.addEventListener("click", () => {
     menu.classList.remove("open");
     overlayMenu.style.display = "none";
@@ -105,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// Music Player and View Count Logic
+// Lógica para atualizar visualizações e controlar o player de música
 document.addEventListener("DOMContentLoaded", function () {
   const blurOverlay = document.getElementById("blur-overlay");
   const playBtn = document.getElementById("play-btn");
@@ -115,9 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const songName = document.getElementById("song-name");
   const artistName = document.getElementById("artist-name");
   const volumeBtn = document.getElementById("volume-btn");
-  const volumeSliderContainer = document.getElementById(
-    "volume-slider-container"
-  );
+  const volumeSliderContainer = document.getElementById("volume-slider-container");
   const volumeSlider = document.getElementById("volume-slider");
 
   let isPlaying = false;
@@ -127,20 +92,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let audioContext = null;
   let audioElement = null;
-  let audioSource = null;
-  let analyser = null;
-  let bufferLength = null;
-  let dataArray = null;
 
   const DEFAULT_VOLUME = 0.35;
 
   async function updateViewsOnClick() {
-    const { views, sha } = await obterVisualizacoes();
-    const novoContador = await atualizarVisualizacoes(views, sha);
+    const { views } = obterVisualizacoes();
+    const novoContador = atualizarVisualizacoes(views);
     const contadorFormatado = simplificarNumero(novoContador);
 
-    document.getElementById("contador-visualizacoes").textContent =
-      contadorFormatado;
+    document.getElementById("contador-visualizacoes").textContent = contadorFormatado;
 
     blurOverlay.style.display = "none";
 
@@ -171,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   }
 
+  // Inicializar o player de música
   function updatePlayer() {
     const song = {
       name: "Drowning (slowed + reverb)",
@@ -203,16 +164,10 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
+  // Função para alternar entre play/pause
   function togglePlay() {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      audioSource = audioContext.createMediaElementSource(audioElement);
-      analyser = audioContext.createAnalyser();
-      audioSource.connect(analyser);
-      analyser.connect(audioContext.destination);
-      analyser.fftSize = 256;
-      bufferLength = analyser.frequencyBinCount;
-      dataArray = new Uint8Array(bufferLength);
     }
 
     if (audioContext.state === "suspended") {
@@ -238,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
     isPlaying = !isPlaying;
   }
 
+  // Atualização do progresso da música
   function updateProgress() {
     if (isPlaying && !isSeeking) {
       const currentTime = audioElement.currentTime;
@@ -246,42 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
       progressBar.style.backgroundSize = `${progressBar.value}% 100%`;
     }
     requestAnimationFrame(updateProgress);
-  }
-
-  function syncProgress() {
-    let wasPlayingBeforeSeek = false;
-
-    progressBar.addEventListener("input", () => {
-      const progressValue = progressBar.value;
-      const newTime = (progressValue / 100) * audioElement.duration;
-      audioElement.currentTime = newTime;
-      progressBar.style.backgroundSize = `${progressBar.value}% 100%`;
-      currentTimeDisplay.textContent = formatTime(audioElement.currentTime);
-    });
-
-    progressBar.addEventListener("mousedown", () => {
-      isSeeking = true;
-      wasPlayingBeforeSeek = isPlaying;
-
-      if (isPlaying) {
-        audioElement.pause();
-        playBtn.classList.remove("playing");
-        playBtn.querySelector("img#play-icon").style.display = "block";
-        playBtn.querySelector("img#pause-icon").style.display = "none";
-      }
-    });
-
-    progressBar.addEventListener("mouseup", () => {
-      isSeeking = false;
-
-      if (wasPlayingBeforeSeek || !isPlaying) {
-        audioElement.play();
-        playBtn.classList.add("playing");
-        playBtn.querySelector("img#play-icon").style.display = "none";
-        playBtn.querySelector("img#pause-icon").style.display = "block";
-        isPlaying = true;
-      }
-    });
   }
 
   volumeBtn.addEventListener("click", () => {
@@ -308,16 +228,12 @@ document.addEventListener("DOMContentLoaded", function () {
     volumeSlider.style.backgroundSize = `${volumeSlider.value}% 100%`;
 
     blurOverlay.style.display = "flex";
+
+    // Carregar as visualizações salvas e atualizar o contador
+    const { views } = obterVisualizacoes();
+    const contadorFormatado = simplificarNumero(views);
+    document.getElementById("contador-visualizacoes").textContent = contadorFormatado;
   };
 
   playBtn.addEventListener("click", togglePlay);
-
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
-      e.preventDefault();
-      togglePlay();
-    }
-  });
-
-  syncProgress();
 });
